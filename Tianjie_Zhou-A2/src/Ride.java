@@ -1,4 +1,4 @@
-public class Ride {
+public class Ride implements RideInterface {
     // 1. 3个实例变量（名称、单周期最大载客量、操作员）
     private String rideName;
     private int maxRider;  // 后续Part5会用到，提前定义
@@ -52,5 +52,45 @@ public class Ride {
                 ", maxRider=" + maxRider +
                 ", operator=" + (operator != null ? operator.getEmployeeId() + "-" + operator.getName() : "无") +
                 '}';
+    }
+
+    @Override
+    public void addVisitorToQueue(Visitor visitor) {
+
+    }
+
+    @Override
+    public void removeVisitorFromQueue() {
+
+    }
+
+    @Override
+    public void printQueue() {
+
+    }
+
+    @Override
+    public void addVisitorToHistory(Visitor visitor) {
+
+    }
+
+    @Override
+    public boolean checkVisitorFromHistory(Visitor visitor) {
+        return false;
+    }
+
+    @Override
+    public int numberOfVisitors() {
+        return 0;
+    }
+
+    @Override
+    public void printRideHistory() {
+
+    }
+
+    @Override
+    public void runOneCycle() {
+
     }
 }

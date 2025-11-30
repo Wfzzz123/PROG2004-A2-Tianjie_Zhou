@@ -1,4 +1,4 @@
-public class Person {
+public abstract class Person {
     // 1. 定义3个实例变量（姓名、年龄、联系方式）
     private String name;
     private int age;
