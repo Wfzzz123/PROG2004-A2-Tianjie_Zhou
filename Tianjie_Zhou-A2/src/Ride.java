@@ -1,19 +1,15 @@
 import java.util.Queue;
 import java.util.LinkedList;
 import java.util.Iterator;
-import java.util.Collections; // 用于排序
+import java.util.Collections;
 
 public class Ride implements RideInterface {
-    // 原有变量
     private String rideName;
     private int maxRider;
     private Employee operator;
-    private int numOfCycles = 0;
+    private int numOfCycles = 0; // 周期计数变量
 
-    // 等待队列（Part3核心）
     private Queue<Visitor> waitingLine = new LinkedList<>();
-
-    // 骑行历史（Part4A/4B用）
     private LinkedList<Visitor> rideHistory = new LinkedList<>();
 
     // 构造器
@@ -29,7 +25,7 @@ public class Ride implements RideInterface {
         this.operator = operator;
     }
 
-    // getter方法
+    // getter方法（新增numOfCycles的getter）
     public String getRideName() {
         return rideName;
     }
@@ -40,6 +36,11 @@ public class Ride implements RideInterface {
 
     public Employee getOperator() {
         return operator;
+    }
+
+    // 新增：获取周期计数的方法（修复核心错误）
+    public int getNumOfCycles() {
+        return numOfCycles;
     }
 
     // Part3：队列操作方法
@@ -129,7 +130,7 @@ public class Ride implements RideInterface {
         System.out.println("======================");
     }
 
-    // Part4B：历史排序方法（使用VisitorComparator）
+    // Part4B：历史排序方法
     public void sortRideHistory() {
         if (rideHistory.isEmpty()) {
             System.out.println("[" + rideName + "]历史为空，无需排序！");
@@ -141,5 +142,29 @@ public class Ride implements RideInterface {
 
     // Part5：骑行周期方法
     @Override
-    public void runOneCycle() {}
+    public void runOneCycle() {
+        System.out.println("\n=== 开始运行[" + rideName + "]的骑行周期 ===");
+
+        if (this.operator == null) {
+            System.out.println("错误：[" + rideName + "]未分配操作员，无法运行周期");
+            return;
+        }
+
+        if (waitingLine.isEmpty()) {
+            System.out.println("错误：[" + rideName + "]等待队列为空，无法运行周期");
+            return;
+        }
+
+        int available = waitingLine.size();
+        int takeCount = Math.min(available, this.maxRider);
+        System.out.println("本次周期可搭载访客数：" + takeCount + "（队列共" + available + "人，最大载客量" + maxRider + "人）");
+
+        for (int i = 0; i < takeCount; i++) {
+            Visitor v = waitingLine.poll();
+            this.addVisitorToHistory(v);
+        }
+
+        this.numOfCycles++;
+        System.out.println("=== [" + rideName + "]第" + this.numOfCycles + "个周期运行完成 ===");
+    }
 }

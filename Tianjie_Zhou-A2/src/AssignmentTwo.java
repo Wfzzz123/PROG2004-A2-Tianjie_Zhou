@@ -1,12 +1,13 @@
 public class AssignmentTwo {
-    // 程序入口：调用partFourB演示历史排序功能
+    // 程序入口：调用partFive演示骑行周期功能
     public static void main(String[] args) {
         System.out.println("PRVMS主题公园管理系统启动");
         AssignmentTwo demo = new AssignmentTwo();
-        // 调用Part4B：骑行历史排序演示（如需运行其他部分，取消注释下方对应行）
-        demo.partFourB();
+        // 调用Part5：运行骑行周期演示（如需运行其他部分，取消注释下方对应行）
+        demo.partFive();
         // demo.partThree();   // 调用Part3：等待队列功能
         // demo.partFourA();   // 调用Part4A：骑行历史基础功能
+        // demo.partFourB();   // 调用Part4B：骑行历史排序功能
     }
 
     // Part3：等待队列功能演示
@@ -120,8 +121,50 @@ public class AssignmentTwo {
         // 预期排序：v2(22,VIS-202) → v5(22,VIS-205) → v1(25,VIS-201) → v3(25,VIS-203) → v4(30,VIS-204)
     }
 
-    // Part5演示方法（后续实现）
-    public void partFive() {}
+    // Part5：运行骑行周期演示
+    public void partFive() {
+        System.out.println("\n=== Part5：运行骑行周期演示 ===");
+
+        // 1. 创建操作员
+        Employee operator = new Employee("李师傅", 35, "13700137000", "EMP-002", "旋转木马区域");
+
+        // 2. 创建Ride对象（旋转木马，maxRider=3）
+        Ride carousel = new Ride("旋转木马", 3, operator);
+        System.out.println("创建游乐项目：" + carousel.getRideName() + "（最大载客量：" + carousel.getMaxRider() + "人）");
+
+        // 3. 创建10个访客（批量创建，避免重复代码）
+        for (int i = 1; i <= 10; i++) {
+            String name = "访客" + i;
+            int age = 18 + (i % 10); // 年龄18-27岁
+            String contact = "1360013600" + i;
+            String visitorId = "VIS-30" + i;
+            boolean isMember = (i % 2 == 0); // 偶数为会员
+            Visitor v = new Visitor(name, age, contact, visitorId, isMember);
+            carousel.addVisitorToQueue(v); // 添加到队列
+        }
+
+        // 4. 打印运行前的队列
+        System.out.println("\n=== 运行前的队列 ===");
+        carousel.printQueue();
+
+        // 5. 运行1个周期
+        carousel.runOneCycle();
+
+        // 6. 打印运行后的队列（剩余10-3=7人）
+        System.out.println("\n=== 运行后的队列 ===");
+        carousel.printQueue();
+
+        // 7. 打印运行后的骑行历史（3人）
+        System.out.println("\n=== 运行后的骑行历史 ===");
+        carousel.printRideHistory();
+
+        // 可选：再次运行周期，验证计数
+        carousel.runOneCycle();
+        System.out.println("\n=== 再次运行1个周期后 ===");
+        System.out.println("总运行周期数：" + carousel.getNumOfCycles());
+        System.out.println("当前历史总人数：" + carousel.numberOfVisitors());
+    }
+
 
     // Part6演示方法（后续实现）
     public void partSix() {}
