@@ -1,13 +1,15 @@
 public class AssignmentTwo {
-    // 程序入口：调用partFive演示骑行周期功能
+    // 程序入口：调用partSix演示导出功能
     public static void main(String[] args) {
-        System.out.println("PRVMS主题公园管理系统启动");
+        System.out.println("PRWMS主题公园管理系统启动");
         AssignmentTwo demo = new AssignmentTwo();
-        // 调用Part5：运行骑行周期演示（如需运行其他部分，取消注释下方对应行）
-        demo.partFive();
+        // 调用Part6：导出骑行历史功能（取消注释下方行即可运行）
+        demo.partSix();
+        // 如需运行其他部分，可取消对应注释
         // demo.partThree();   // 调用Part3：等待队列功能
         // demo.partFourA();   // 调用Part4A：骑行历史基础功能
         // demo.partFourB();   // 调用Part4B：骑行历史排序功能
+        // demo.partFive();    // 调用Part5：运行骑行周期功能
     }
 
     // Part3：等待队列功能演示
@@ -82,7 +84,7 @@ public class AssignmentTwo {
         System.out.println("\n=== 历史总人数 ===");
         thunderstorm.numberOfVisitors();
 
-        // 6. 打印骑行历史
+        // 6. 打印历史
         System.out.println("\n=== 打印骑行历史 ===");
         thunderstorm.printRideHistory();
     }
@@ -109,14 +111,14 @@ public class AssignmentTwo {
         carousel.addVisitorToHistory(v5);
 
         // 4. 打印排序前的历史
-        System.out.println("=== 排序前 ===");
+        System.out.println("\n=== 排序前 ===");
         carousel.printRideHistory();
 
         // 5. 排序（使用VisitorComparator）
         carousel.sortRideHistory();
 
         // 6. 打印排序后的历史（验证排序效果）
-        System.out.println("=== 排序后 ===");
+        System.out.println("\n=== 排序后 ===");
         carousel.printRideHistory();
         // 预期排序：v2(22,VIS-202) → v5(22,VIS-205) → v1(25,VIS-201) → v3(25,VIS-203) → v4(30,VIS-204)
     }
@@ -125,49 +127,67 @@ public class AssignmentTwo {
     public void partFive() {
         System.out.println("\n=== Part5：运行骑行周期演示 ===");
 
-        // 1. 创建操作员
         Employee operator = new Employee("李师傅", 35, "13700137000", "EMP-002", "旋转木马区域");
-
-        // 2. 创建Ride对象（旋转木马，maxRider=3）
         Ride carousel = new Ride("旋转木马", 3, operator);
         System.out.println("创建游乐项目：" + carousel.getRideName() + "（最大载客量：" + carousel.getMaxRider() + "人）");
 
-        // 3. 创建10个访客（批量创建，避免重复代码）
         for (int i = 1; i <= 10; i++) {
             String name = "访客" + i;
-            int age = 18 + (i % 10); // 年龄18-27岁
+            int age = 18 + (i % 10);
             String contact = "1360013600" + i;
             String visitorId = "VIS-30" + i;
-            boolean isMember = (i % 2 == 0); // 偶数为会员
+            boolean isMember = (i % 2 == 0);
             Visitor v = new Visitor(name, age, contact, visitorId, isMember);
-            carousel.addVisitorToQueue(v); // 添加到队列
+            carousel.addVisitorToQueue(v);
         }
 
-        // 4. 打印运行前的队列
         System.out.println("\n=== 运行前的队列 ===");
         carousel.printQueue();
 
-        // 5. 运行1个周期
         carousel.runOneCycle();
 
-        // 6. 打印运行后的队列（剩余10-3=7人）
         System.out.println("\n=== 运行后的队列 ===");
         carousel.printQueue();
 
-        // 7. 打印运行后的骑行历史（3人）
         System.out.println("\n=== 运行后的骑行历史 ===");
         carousel.printRideHistory();
 
-        // 可选：再次运行周期，验证计数
+        // 再次运行周期验证计数
         carousel.runOneCycle();
         System.out.println("\n=== 再次运行1个周期后 ===");
         System.out.println("总运行周期数：" + carousel.getNumOfCycles());
         System.out.println("当前历史总人数：" + carousel.numberOfVisitors());
     }
 
+    // Part6：导出骑行历史到文件演示
+    public void partSix() {
+        System.out.println("\n=== Part6：导出骑行历史到文件演示 ===");
 
-    // Part6演示方法（后续实现）
-    public void partSix() {}
+        // 1. 创建Ride对象并添加5个访客到历史
+        Ride rollerCoaster = new Ride("过山车", 4, null);
+        Visitor v1 = new Visitor("张三", 20, "13800138001", "VIS-401", true);
+        Visitor v2 = new Visitor("李四", 25, "13800138002", "VIS-402", false);
+        Visitor v3 = new Visitor("王五", 18, "13800138003", "VIS-403", true);
+        Visitor v4 = new Visitor("赵六", 30, "13800138004", "VIS-404", false);
+        Visitor v5 = new Visitor("孙七", 22, "13800138005", "VIS-405", true);
+        rollerCoaster.addVisitorToHistory(v1);
+        rollerCoaster.addVisitorToHistory(v2);
+        rollerCoaster.addVisitorToHistory(v3);
+        rollerCoaster.addVisitorToHistory(v4);
+        rollerCoaster.addVisitorToHistory(v5);
+
+        // 2. 定义文件路径（根据操作系统选择路径）
+        // Windows系统路径示例
+        String filePath = "C:/rideHistory.csv";
+        // Mac/Linux系统路径示例（替换为你的用户名）
+        // String filePath = "/Users/yourusername/rideHistory.csv";
+
+        // 3. 执行导出
+        rollerCoaster.exportRideHistory(filePath);
+
+        // 4. 提示用户查看文件
+        System.out.println("请在路径[" + filePath + "]查看导出的CSV文件");
+    }
 
     // Part7演示方法（后续实现）
     public void partSeven() {}

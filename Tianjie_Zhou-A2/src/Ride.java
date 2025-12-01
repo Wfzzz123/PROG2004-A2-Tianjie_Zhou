@@ -2,6 +2,9 @@ import java.util.Queue;
 import java.util.LinkedList;
 import java.util.Iterator;
 import java.util.Collections;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Ride implements RideInterface {
     private String rideName;
@@ -25,7 +28,7 @@ public class Ride implements RideInterface {
         this.operator = operator;
     }
 
-    // getter方法（新增numOfCycles的getter）
+    // getter方法
     public String getRideName() {
         return rideName;
     }
@@ -38,7 +41,6 @@ public class Ride implements RideInterface {
         return operator;
     }
 
-    // 新增：获取周期计数的方法（修复核心错误）
     public int getNumOfCycles() {
         return numOfCycles;
     }
@@ -166,5 +168,40 @@ public class Ride implements RideInterface {
 
         this.numOfCycles++;
         System.out.println("=== [" + rideName + "]第" + this.numOfCycles + "个周期运行完成 ===");
+    }
+
+    // 新增：导出骑行历史到CSV文件
+    public void exportRideHistory(String filePath) {
+        System.out.println("\n=== 开始导出[" + rideName + "]骑行历史到文件：" + filePath + " ===");
+
+        // 检查历史是否为空
+        if (rideHistory.isEmpty()) {
+            System.out.println("警告：[" + rideName + "]骑行历史为空，无需导出");
+            return;
+        }
+
+        // 尝试写入文件（try-with-resources自动关闭流）
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+            // 写入CSV表头
+            bw.write("访客ID,姓名,年龄,联系方式,是否会员");
+            bw.newLine();
+
+            // 写入每条访客记录
+            for (Visitor v : rideHistory) {
+                String line = v.getVisitorId() + "," +
+                        v.getName() + "," +
+                        v.getAge() + "," +
+                        v.getContact() + "," +
+                        (v.isMember() ? "是" : "否");
+                bw.write(line);
+                bw.newLine();
+            }
+
+            System.out.println("导出成功！共导出" + rideHistory.size() + "条访客记录");
+
+        } catch (IOException e) {
+            // 捕获IO异常（路径错误、权限不足等）
+            System.err.println("导出失败：" + e.getMessage());
+        }
     }
 }
