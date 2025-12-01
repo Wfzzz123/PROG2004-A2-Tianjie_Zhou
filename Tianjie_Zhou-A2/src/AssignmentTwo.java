@@ -1,20 +1,30 @@
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Collections;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 public class AssignmentTwo {
-    // 程序入口：调用partSix演示导出功能
+    // 程序入口：调用partSeven演示导入功能
     public static void main(String[] args) {
         System.out.println("PRWMS主题公园管理系统启动");
         AssignmentTwo demo = new AssignmentTwo();
-        // 调用Part6：导出骑行历史功能（取消注释下方行即可运行）
-        demo.partSix();
-        // 如需运行其他部分，可取消对应注释
-        // demo.partThree();   // 调用Part3：等待队列功能
-        // demo.partFourA();   // 调用Part4A：骑行历史基础功能
-        // demo.partFourB();   // 调用Part4B：骑行历史排序功能
-        // demo.partFive();    // 调用Part5：运行骑行周期功能
+        // 调用Part7：从文件导入骑行历史
+        demo.partSeven();
+        // 如需测试其他功能，可取消下面对应注释
+        // demo.partThree();    // 调用Part3：等待队列功能
+        // demo.partFourA();    // 调用Part4A：骑行历史基础功能
+        // demo.partFourB();    // 调用Part4B：骑行历史排序功能
+        // demo.partFive();     // 调用Part5：运行骑行周期功能
+        // demo.partSix();      // 调用Part6：导出骑行历史功能
     }
 
-    // Part3：等待队列功能演示
+    // Part3: 等待队列功能演示
     public void partThree() {
-        System.out.println("\n=== Part3：等待队列功能演示 ===");
+        System.out.println("\n=== Part3: 等待队列功能演示 ===");
 
         // 1. 创建操作员
         Employee operator = new Employee("张三", 30, "13800138000", "EMP-001", "过山车区域");
@@ -52,9 +62,9 @@ public class AssignmentTwo {
         rollerCoaster.printQueue();
     }
 
-    // Part4A：骑行历史功能演示
+    // Part4A: 骑行历史功能演示
     public void partFourA() {
-        System.out.println("\n=== Part4A：骑行历史功能演示 ===");
+        System.out.println("\n=== Part4A: 骑行历史功能演示 ===");
 
         // 1. 创建Ride对象
         Ride thunderstorm = new Ride("激流勇进", 2, null);
@@ -89,19 +99,19 @@ public class AssignmentTwo {
         thunderstorm.printRideHistory();
     }
 
-    // Part4B：骑行历史排序演示（核心功能：使用VisitorComparator排序）
+    // Part4B: 骑行历史排序演示（核心功能：使用VisitorComparator排序）
     public void partFourB() {
-        System.out.println("\n=== Part4B：骑行历史排序演示 ===");
+        System.out.println("\n=== Part4B: 骑行历史排序演示 ===");
 
         // 1. 创建Ride对象（旋转木马）
         Ride carousel = new Ride("旋转木马", 6, null);
 
         // 2. 创建5个访客（年龄故意打乱，便于演示排序）
-        Visitor v1 = new Visitor("Zoe", 25, "17700177001", "VIS-201", true);    // 25岁
-        Visitor v2 = new Visitor("Yoyo", 22, "17700177002", "VIS-202", false);   // 22岁
-        Visitor v3 = new Visitor("Xander", 25, "17700177003", "VIS-203", true);  // 25岁（与v1同岁）
-        Visitor v4 = new Visitor("Will", 30, "17700177004", "VIS-204", false);   // 30岁
-        Visitor v5 = new Visitor("Vivian", 22, "17700177005", "VIS-205", true);  // 22岁（与v2同岁）
+        Visitor v1 = new Visitor("Zoe", 25, "17700177001", "VIS-201", true);  // 25岁
+        Visitor v2 = new Visitor("Yoyo", 22, "17700177002", "VIS-202", false); // 22岁
+        Visitor v3 = new Visitor("Xander", 25, "17700177003", "VIS-203", true); // 25岁（与v1同岁）
+        Visitor v4 = new Visitor("Will", 30, "17700177004", "VIS-204", false); // 30岁
+        Visitor v5 = new Visitor("Vivian", 22, "17700177005", "VIS-205", true); // 22岁（与v2同岁）
 
         // 3. 添加到历史
         carousel.addVisitorToHistory(v1);
@@ -123,9 +133,9 @@ public class AssignmentTwo {
         // 预期排序：v2(22,VIS-202) → v5(22,VIS-205) → v1(25,VIS-201) → v3(25,VIS-203) → v4(30,VIS-204)
     }
 
-    // Part5：运行骑行周期演示
+    // Part5: 运行骑行周期演示
     public void partFive() {
-        System.out.println("\n=== Part5：运行骑行周期演示 ===");
+        System.out.println("\n=== Part5: 运行骑行周期演示 ===");
 
         Employee operator = new Employee("李师傅", 35, "13700137000", "EMP-002", "旋转木马区域");
         Ride carousel = new Ride("旋转木马", 3, operator);
@@ -159,9 +169,9 @@ public class AssignmentTwo {
         System.out.println("当前历史总人数：" + carousel.numberOfVisitors());
     }
 
-    // Part6：导出骑行历史到文件演示
+    // Part6: 导出骑行历史到文件演示
     public void partSix() {
-        System.out.println("\n=== Part6：导出骑行历史到文件演示 ===");
+        System.out.println("\n=== Part6: 导出骑行历史到文件演示 ===");
 
         // 1. 创建Ride对象并添加5个访客到历史
         Ride rollerCoaster = new Ride("过山车", 4, null);
@@ -189,6 +199,32 @@ public class AssignmentTwo {
         System.out.println("请在路径[" + filePath + "]查看导出的CSV文件");
     }
 
-    // Part7演示方法（后续实现）
-    public void partSeven() {}
+    // Part7: 从文件导入骑行历史演示
+    public void partSeven() {
+        System.out.println("\n=== Part7: 从文件导入骑行历史演示 ===");
+
+        // 1. 创建新的Ride对象（导入到这个对象的历史中）
+        Ride newRide = new Ride("新过山车", 4, null);
+        System.out.println("创建新游乐项目：" + newRide.getRideName());
+        System.out.println("导入前的骑行历史：");
+        newRide.printRideHistory();  // 初始为空
+
+        // 2. 定义文件路径（与Part6导出的路径一致）
+        String filePath = "C:/rideHistory.csv";  // 确保文件存在
+
+        // 3. 执行导入
+        newRide.importRideHistory(filePath);
+
+        // 4. 验证导入结果：打印历史人数和列表
+        System.out.println("\n=== 导入后的验证 ===");
+        System.out.println("导入后的历史总人数（预期5人）：");
+        newRide.numberOfVisitors();
+        System.out.println("导入后的骑行历史列表：");
+        newRide.printRideHistory();  // 显示导入的5个访客
+    }
+
+    // 辅助方法：简化Visitor对象创建（避免重复代码）
+    private Visitor newVisitor(String name, int age, String contact, String visitorId, boolean isMember) {
+        return new Visitor(name, age, contact, visitorId, isMember);
+    }
 }

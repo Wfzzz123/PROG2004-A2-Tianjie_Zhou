@@ -5,13 +5,14 @@ import java.util.Collections;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class Ride implements RideInterface {
     private String rideName;
     private int maxRider;
     private Employee operator;
     private int numOfCycles = 0; // 周期计数变量
-
     private Queue<Visitor> waitingLine = new LinkedList<>();
     private LinkedList<Visitor> rideHistory = new LinkedList<>();
 
@@ -45,7 +46,7 @@ public class Ride implements RideInterface {
         return numOfCycles;
     }
 
-    // Part3：队列操作方法
+    // Part3: 队列操作方法
     @Override
     public void addVisitorToQueue(Visitor visitor) {
         if (visitor != null) {
@@ -68,9 +69,9 @@ public class Ride implements RideInterface {
 
     @Override
     public void printQueue() {
-        System.out.println("=== [" + rideName + "]等待队列（共" + waitingLine.size() + "人）===");
+        System.out.println("=== [" + rideName + "]等待队列（共" + waitingLine.size() + "人） ===");
         if (waitingLine.isEmpty()) {
-            System.out.println("队列无访客");
+            System.out.println("队列为空");
             return;
         }
         int index = 1;
@@ -78,10 +79,10 @@ public class Ride implements RideInterface {
             System.out.println(index + ". " + v);
             index++;
         }
-        System.out.println("======================");
+        System.out.println("===========================");
     }
 
-    // Part4A：历史相关方法
+    // Part4A: 历史相关方法
     @Override
     public void addVisitorToHistory(Visitor visitor) {
         if (visitor != null) {
@@ -117,7 +118,7 @@ public class Ride implements RideInterface {
 
     @Override
     public void printRideHistory() {
-        System.out.println("=== [" + rideName + "]骑行历史（共" + rideHistory.size() + "人）===");
+        System.out.println("=== [" + rideName + "]骑行历史（共" + rideHistory.size() + "人） ===");
         if (rideHistory.isEmpty()) {
             System.out.println("历史无访客");
             return;
@@ -129,10 +130,10 @@ public class Ride implements RideInterface {
             System.out.println(index + ". " + v);
             index++;
         }
-        System.out.println("======================");
+        System.out.println("===========================");
     }
 
-    // Part4B：历史排序方法
+    // Part4B: 历史排序方法
     public void sortRideHistory() {
         if (rideHistory.isEmpty()) {
             System.out.println("[" + rideName + "]历史为空，无需排序！");
@@ -142,16 +143,14 @@ public class Ride implements RideInterface {
         System.out.println("[" + rideName + "]历史排序完成（按年龄升序，年龄相同则按ID升序）");
     }
 
-    // Part5：骑行周期方法
+    // Part5: 骑行周期方法
     @Override
     public void runOneCycle() {
         System.out.println("\n=== 开始运行[" + rideName + "]的骑行周期 ===");
-
         if (this.operator == null) {
             System.out.println("错误：[" + rideName + "]未分配操作员，无法运行周期");
             return;
         }
-
         if (waitingLine.isEmpty()) {
             System.out.println("错误：[" + rideName + "]等待队列为空，无法运行周期");
             return;
@@ -159,7 +158,7 @@ public class Ride implements RideInterface {
 
         int available = waitingLine.size();
         int takeCount = Math.min(available, this.maxRider);
-        System.out.println("本次周期可搭载访客数：" + takeCount + "（队列共" + available + "人，最大载客量" + maxRider + "人）");
+        System.out.println("本次周期可搭载访客数：" + takeCount + "（队列共" + available + "人，最大容量" + maxRider + "人）");
 
         for (int i = 0; i < takeCount; i++) {
             Visitor v = waitingLine.poll();
@@ -170,17 +169,14 @@ public class Ride implements RideInterface {
         System.out.println("=== [" + rideName + "]第" + this.numOfCycles + "个周期运行完成 ===");
     }
 
-    // 新增：导出骑行历史到CSV文件
+    // 导出骑行历史到CSV文件
     public void exportRideHistory(String filePath) {
         System.out.println("\n=== 开始导出[" + rideName + "]骑行历史到文件：" + filePath + " ===");
-
-        // 检查历史是否为空
         if (rideHistory.isEmpty()) {
             System.out.println("警告：[" + rideName + "]骑行历史为空，无需导出");
             return;
         }
 
-        // 尝试写入文件（try-with-resources自动关闭流）
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
             // 写入CSV表头
             bw.write("访客ID,姓名,年龄,联系方式,是否会员");
@@ -196,12 +192,57 @@ public class Ride implements RideInterface {
                 bw.write(line);
                 bw.newLine();
             }
-
             System.out.println("导出成功！共导出" + rideHistory.size() + "条访客记录");
-
         } catch (IOException e) {
-            // 捕获IO异常（路径错误、权限不足等）
             System.err.println("导出失败：" + e.getMessage());
+        }
+    }
+
+    // 从CSV文件导入骑行历史
+    public void importRideHistory(String filePath) {
+        System.out.println("\n=== 开始从文件[" + filePath + "]导入[" + rideName + "]骑行历史 ===");
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            int importedCount = 0;
+            boolean isFirstLine = true; // 标记是否为表头行
+
+            while ((line = br.readLine()) != null) {
+                // 跳过表头行
+                if (isFirstLine) {
+                    System.out.println("跳过表头行：" + line);
+                    isFirstLine = false;
+                    continue;
+                }
+
+                // 分割CSV行
+                String[] parts = line.split(",");
+                // 检查字段数量
+                if (parts.length != 5) {
+                    System.out.println("跳过无效行（字段数量错误）：" + line);
+                    continue;
+                }
+
+                // 解析每个字段
+                try {
+                    String visitorId = parts[0].trim();
+                    String name = parts[1].trim();
+                    int age = Integer.parseInt(parts[2].trim());
+                    String contact = parts[3].trim();
+                    boolean isMember = parts[4].trim().equals("是");
+
+                    // 创建Visitor对象并添加到历史
+                    Visitor v = new Visitor(name, age, contact, visitorId, isMember);
+                    this.addVisitorToHistory(v);
+                    importedCount++;
+                } catch (NumberFormatException e) {
+                    System.out.println("跳过无效行（格式错误）：" + line + "，错误：" + e.getMessage());
+                }
+            }
+
+            System.out.println("导入完成！共成功导入" + importedCount + "条访客记录");
+        } catch (IOException e) {
+            System.err.println("导入失败：" + e.getMessage());
         }
     }
 }
